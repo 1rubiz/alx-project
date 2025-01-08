@@ -18,6 +18,11 @@ const useQuotesStore = create((set, get) => ({
     return get().items.includes(item);
   },
 
+  // Clear all items
+  clearAll: () => {
+    set({ items: [] });
+  },
+
   // Remove specific string
   removeItem: (item) => {
     set((state) => ({

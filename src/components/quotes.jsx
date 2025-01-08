@@ -8,7 +8,7 @@ const Quotes = () => {
   const [inspiration, setInspiration] = useState(quotes[0]);
   const [isOpened, setIsOpened] = useState(false);
   const [liked, setLiked] = useState(false)
-  const { items, toggleItem, exists, removeItem } = useQuotesStore();
+  const { items, toggleItem, exists, removeItem, clearAll } = useQuotesStore();
 
   useEffect(() => {
     if (inspiration) {
@@ -66,7 +66,7 @@ const Quotes = () => {
           }
         </button>
         <button
-          onClick={getRandomInspiration}
+          onClick={clearAll}
           className="bg-gray-600 my-4 hover:bg-gray-300 text-xs md:text-base text-white px-4 py-2 rounded-md shadow-md focus:outline-none transition duration-300 flex items-center gap-2"
         >
           Clear Favourites
