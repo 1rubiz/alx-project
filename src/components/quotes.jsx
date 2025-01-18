@@ -16,7 +16,9 @@ const Quotes = () => {
   const [showFirst, setShowFirst] = useState(true);
   const [custom, setCustom] = useState(false)
   const [image, setImage] = useState(null);
-  const [selectedColor, setSelectedColor] = useState('#FF6B6B'); 
+  const [selectedColor, setSelectedColor] = useState('#FFFFFF');
+  const [quote, setQuote] = useState('')
+  const [author, setAuthor] = useState('')
   const componentRef = useRef(null);
 
   const toggleComponents = () => {
@@ -25,6 +27,16 @@ const Quotes = () => {
 
   const clearImage = () => {
     setImage(null)
+  }
+
+  const openCustom = () => {
+    setCustom(true)
+    setShowFirst(false)
+  }
+
+  const openDownload = () => {
+    setCustom(false)
+    setShowFirst(false)
   }
 
   const slideVariants = {
@@ -137,6 +149,7 @@ const Quotes = () => {
                   }
                 </button>
                 <button
+                  onClick={openDownload}
                   className="bg-green-600 hover:bg-green-300 col-span-5 text-xs md:text-base text-white px-4 py-2 rounded-md shadow-md focus:outline-none transition duration-300 flex items-center justify-center gap-2"
                 >
                   Download<FaDownload />
@@ -150,7 +163,7 @@ const Quotes = () => {
               </div>
               <div className='w-full flex justify-center items-center gap-2 mb-2'>
                 <button
-                  onClick={() => setShowFirst(false)}
+                  onClick={openCustom}
                   className="bg-white w-full col-span-1 hover:bg-gray-300 text-xs md:text-base px-4 py-2 rounded-md shadow-md focus:outline-none transition duration-300 flex items-center justify-center gap-2"
                 >
                   Custom Quote <FaPencil />
@@ -209,9 +222,28 @@ const Quotes = () => {
             <div ref={componentRef} className={`w-full bg-white ${isLightColor(selectedColor) ? 'text-black' : 'text-white'} h-64 relative flex items-center justify-center rounded-md ${image ? 'bg-cover bg-center bg-no-repeat' : 'bg-gray-50'}`}
               style={image ? { backgroundImage: `url(${image})` } : { backgroundColor: selectedColor }}
             >
-              <img src="/quotation-mark.png" className='w-8 h-8 absolute top-4 left-4' alt="" />
-              <p className={`max-w-md px-4 ${image && 'bg-white/10 backdrop-blur-lg py-8 rounded-md'}`}>{inspiration.split('–')[0]}</p>
-              <p className='absolute bottom-4 left-4'><span className='font-bold'>Author</span> - {inspiration.split('–')[1] ? inspiration.split('–')[1] : 'Anonymous'}</p>
+              {
+                isLightColor(selectedColor) ? <img src="/quotation-mark.png" className='w-8 h-8 absolute top-4 left-4' alt="" /> : <img src="/quote.png" className='w-8 h-8 absolute top-4 left-4 rotate-180' alt="" />
+              }
+              <p className={`max-w-md px-4 ${image && 'bg-white/10 backdrop-blur-lg text-lg py-8 rounded-md'}`}>
+                {
+                  custom ? (
+                    quote ? quote : '...'
+                  ) : (
+                    inspiration.split('–')[0]
+                  )
+                }
+              </p>
+              <p className='absolute bottom-4 left-4'>
+                <span className='font-bold'>Author - </span> 
+                {
+                  custom ? (
+                    author ? author : 'Anonymous'
+                  ) : (
+                    inspiration.split('–')[1] ? inspiration.split('–')[1] : 'Anonymous'
+                  )
+                }
+              </p>
               <img src="/quote.png" alt="" className='w-8 h-8 absolute bottom-4 right-4' />
             </div>
             {
@@ -220,11 +252,11 @@ const Quotes = () => {
                   <div className='w-full flex flex-col my-4 gap-4 bg-white/10 backdrop-blur-lg border-white p-4 rounded-md'>
                     <div className='flex flex-col gap-2 md:flex-row'>
                       <span className='text-white'>Quote: </span>
-                      <input type="text" className='bg-white/10 backdrop-blur-lg border-white border rounded-md text-base px-2 py-1' />
+                      <input type="text" value={quote} onChange={(e) => setQuote(e.target.value)} className='bg-white/10 backdrop-blur-lg text-white border-white border rounded-md text-base px-2 py-1' />
                     </div>
                     <div className='flex flex-col gap-2 md:flex-row'>
                       <span className='text-white'>Author: </span>
-                      <input type="text" className='bg-white/10 backdrop-blur-lg border-white border rounded-md text-base px-2 py-1' />
+                      <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} className='bg-white/10 backdrop-blur-lg border-white text-white border rounded-md text-base px-2 py-1' />
                     </div>
                   </div>
                 </>
