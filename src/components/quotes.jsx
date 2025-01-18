@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FaHeart, FaHeartCrack, FaCircleStop, FaTrash } from 'react-icons/fa6'
 import { IoClose } from 'react-icons/io5'
 import useQuotesStore from '../stores/quoteStore';
@@ -13,6 +13,9 @@ const Quotes = () => {
   const [liked, setLiked] = useState(false)
   const { items, toggleItem, exists, removeItem, clearAll } = useQuotesStore();
   const [showFirst, setShowFirst] = useState(true);
+  const [custom, setCustom] = useState(false)
+  const [image, setImage] = useState(null);
+  const componentRef = useRef(null);
 
   const toggleComponents = () => {
     setShowFirst(!showFirst);
@@ -129,7 +132,7 @@ const Quotes = () => {
               <div className='w-full flex justify-center items-center gap-2 mb-2'>
                 <button
                   onClick={() => setShowFirst(false)}
-                  className="bg-white col-span-1 hover:bg-gray-300 text-xs md:text-base px-4 py-2 rounded-md shadow-md focus:outline-none transition duration-300 flex items-center justify-center gap-2"
+                  className="bg-white w-full col-span-1 hover:bg-gray-300 text-xs md:text-base px-4 py-2 rounded-md shadow-md focus:outline-none transition duration-300 flex items-center justify-center gap-2"
                 >
                   Custom Quote
                 </button>
@@ -173,8 +176,35 @@ const Quotes = () => {
             variants={slideVariants}
             transition={{ duration: 0.5 }}
           >
-            <CustomQuote />
-            <ImageUpload />
+            <div ref={componentRef} className={`w-full bg-white h-64 relative flex items-center justify-center rounded-md ${image ? 'bg-cover bg-center bg-no-repeat' : 'bg-gray-50'}`}
+              style={image ? { backgroundImage: `url(${image})` } : {}}
+            >
+              <img src="/quotation-mark.png" className='w-8 h-8 absolute top-4 left-4' alt="" />
+              <p className={`max-w-md px-4 ${image && 'bg-white/10 backdrop-blur-lg text-white py-8 rounded-md'}`}>{inspiration.split('–')[0]}</p>
+              <p className='absolute bottom-4 left-4'><span className='font-bold'>Author</span> - {inspiration.split('–')[1] ? inspiration.split('–')[1] : 'Anonymous'}</p>
+              <img src="/quote.png" alt="" className='w-8 h-8 absolute bottom-4 right-4' />
+            </div>
+            {
+              custom && (
+                <>
+                  <div className='w-full flex flex-col my-4 gap-4 bg-white/10 backdrop-blur-lg border-white p-4 rounded-md'>
+                    <div className='flex flex-col gap-2 md:flex-row'>
+                      <span className='text-white'>Quote: </span>
+                      <input type="text" className='bg-white/10 backdrop-blur-lg border-white border rounded-md text-base px-2 py-1' />
+                    </div>
+                    <div className='flex flex-col gap-2 md:flex-row'>
+                      <span className='text-white'>Author: </span>
+                      <input type="text" className='bg-white/10 backdrop-blur-lg border-white border rounded-md text-base px-2 py-1' />
+                    </div>
+                  </div>
+                </>
+              )
+            }
+            <CustomQuote componentRef={componentRef} />
+            <ImageUpload
+              image={image} 
+              setImage={setImage}
+            />
           </motion.div>
         )}
       </AnimatePresence>

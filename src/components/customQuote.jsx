@@ -1,8 +1,9 @@
 import React, { useRef } from 'react';
 import { toPng } from 'html-to-image';
+import { FaDownload } from 'react-icons/fa'
 
-const CustomQuote = () => {
-  const componentRef = useRef(null);
+const CustomQuote = ({ componentRef }) => {
+  
 
   const handleDownload = async () => {
     if (componentRef.current) {
@@ -15,20 +16,23 @@ const CustomQuote = () => {
       } catch (error) {
         console.error('Failed to generate image:', error);
       }
+    } else {
+      console.log('no image ref')
     }
   };
 
   return (
     <div>
       {/* Component to be converted */}
-      <div ref={componentRef} style={{ padding: '20px', backgroundColor: '#f0f0f0' }}>
+      {/* <div ref={componentRef} style={{ padding: '20px', backgroundColor: '#f0f0f0' }}>
         <h1>Hello, World!</h1>
         <p>This component will be converted to an image.</p>
-      </div>
+      </div>*/}
 
       {/* Button to trigger download */}
       <button
         onClick={handleDownload}
+        className='flex items-center px-6 gap-4'
         style={{
           marginTop: '10px',
           padding: '10px 20px',
@@ -39,7 +43,7 @@ const CustomQuote = () => {
           cursor: 'pointer',
         }}
       >
-        Download as Image
+        <FaDownload /> Download
       </button>
     </div>
   );
