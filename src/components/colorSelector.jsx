@@ -20,12 +20,12 @@ const ColorSelector = ({ selectedColor, setSelectedColor, isLightColor }) => {
   return (
     <div className="w-full max-w-md mx-auto space-y-4 my-2 bg-white/10 backdrop-blur-lg rounded-md p-2">
       {/* Color palette */}
-      <div className="flex flex-wrap gap-4 justify-center">
+      <div className="flex flex-wrap gap-4 justify-between md:justify-center">
         {colorPalette.map((color) => (
           <button
             key={color.hex}
             onClick={() => setSelectedColor(color.hex)}
-            className={`w-12 h-12 rounded-full transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+            className={`w-6 h-6 md:w-8 lg:w-12 md:h-8 lg:h-12 rounded-full transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
               ${selectedColor === color.hex ? 'ring-2 ring-offset-2 ring-blue-500' : ''}`}
             style={{ backgroundColor: color.hex }}
             title={color.name}
