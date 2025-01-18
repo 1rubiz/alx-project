@@ -3,12 +3,14 @@ import { toPng } from 'html-to-image';
 import { FaDownload } from 'react-icons/fa'
 import toast from 'react-hot-toast';
 
+
 const CustomQuote = ({ componentRef }) => {
   
 
   const handleDownload = async () => {
     if (componentRef.current) {
       try {
+        toast.loading('Processing...', 3000)
         const dataUrl = await toPng(componentRef.current);
         const link = document.createElement('a');
         link.href = dataUrl;

@@ -88,7 +88,12 @@ const Quotes = () => {
   };
 
   const selectQuote = (item) => {
-    setInspiration(item)
+    if (custom) {
+      setQuote(item.split('–')[0])
+      setAuthor(item.split('–')[1])
+    } else {
+      setInspiration(item)
+    }
     setIsOpened(false)
   }
 
@@ -102,6 +107,44 @@ const Quotes = () => {
           >
             Back
           </button>
+        )
+      }
+      {
+        isOpened && (
+          <div
+            className={`absolute z-[100] top-0 right-0 h-screen w-full max-w-md bg-white/30 backdrop-blur-lg dark:bg-gray-800 rounded-lg shadow-lg px-6 transition-transform duration-500 ease-in-out flex items-center justify-center ${isOpened ? 'translate-x-0' : '-translate-x-full'
+              }`}
+          >
+            <IoClose className="absolute top-4 right-4 text-white z-50 font-bold text-3xl cursor-pointer" onClick={() => setIsOpened(false)} />
+            <div className='w-full h-[60%] overflow-y-scroll no-scrollbar px-2 flex flex-col gap-4'>
+              {
+                items.length !== 0 && (
+                  <div>
+                    <button
+                      onClick={clearAll}
+                      className="bg-red-500 hover:bg-gray-300 text-xs md:text-base text-white px-4 py-2 rounded-md shadow-md focus:outline-none transition duration-300 flex items-center gap-2"
+                    >
+                      Clear Favourites
+                    </button>
+                  </div>
+                )
+              }
+              {
+                items ? (
+                  items.map((item) =>
+                    <div key={item} className='grid grid-cols-6 p-2 shadow-lg my-2'>
+                      <div onClick={() => selectQuote(item)} className='col-span-5 text-nowrap max-w-full overflow-x-clip cursor-pointer'>
+                        {item}
+                      </div>
+                      <div className='col-span-1 text-red-400 flex items-center cursor-pointer justify-center'>
+                        <FaTrash onClick={() => removeItem(item)} />
+                      </div>
+                    </div>
+                  )
+                ) : 'Your favourites will appear here'
+              }
+            </div>
+          </div>
         )
       }
       <AnimatePresence mode="wait">
@@ -154,12 +197,6 @@ const Quotes = () => {
                 >
                   Download<FaDownload />
                 </button>
-                {/*<button
-                  onClick={clearAll}
-                  className="bg-gray-600 hover:bg-gray-300 text-xs md:text-base text-white px-4 py-2 rounded-md shadow-md focus:outline-none transition duration-300 flex items-center gap-2"
-                >
-                  Clear Favourites
-                </button>*/}
               </div>
               <div className='w-full flex justify-center items-center gap-2 mb-2'>
                 <button
@@ -171,32 +208,6 @@ const Quotes = () => {
               </div>
             </div>
             {/*favourites*/}
-            {
-              isOpened && (
-                <div
-                  className={`absolute z-[100] top-0 right-0 h-screen w-full max-w-md bg-white/10 backdrop-blur-lg dark:bg-gray-800 rounded-lg shadow-lg px-6 transition-transform duration-500 ease-in-out flex items-center justify-center ${isOpened ? 'translate-x-0' : '-translate-x-full'
-                    }`}
-                >
-                  <IoClose className="absolute top-4 right-4 text-white z-50 font-bold text-3xl cursor-pointer" onClick={() => setIsOpened(false)} />
-                  <div className='w-full h-[60%] overflow-y-scroll no-scrollbar px-2 flex flex-col gap-4'>
-                    {
-                      items ? (
-                        items.map((item) =>
-                          <div key={item} className='grid grid-cols-6 p-2 shadow-lg my-2'>
-                            <div onClick={() => selectQuote(item)} className='col-span-5 text-nowrap max-w-full overflow-x-clip text-gray-300 cursor-pointer'>
-                              {item}
-                            </div>
-                            <div className='col-span-1 text-red-400 flex items-center cursor-pointer justify-center'>
-                              <FaTrash onClick={() => removeItem(item)} />
-                            </div>
-                          </div>
-                        )
-                      ) : 'Your favourites will appear here'
-                    }
-                  </div>
-                </div>
-              )
-            }
           </motion.div>
         ) : (
           <motion.div
@@ -210,7 +221,19 @@ const Quotes = () => {
           >
             {
               image ? (
-                <button onClick={clearImage}>Clear Selected Image</button>
+                <div className='w-full my-2'>
+                  <button
+                    className='flex items-center bg-red-400 px-6 gap-4'
+                    style={{
+                      marginTop: '10px',
+                      padding: '10px 20px',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '5px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={clearImage}>Clear Selected Image</button>
+                </div>
               ) : (
                 <ColorSelector 
                   selectedColor={selectedColor}
@@ -252,12 +275,33 @@ const Quotes = () => {
                   <div className='w-full flex flex-col my-4 gap-4 bg-white/10 backdrop-blur-lg border-white p-4 rounded-md'>
                     <div className='flex flex-col gap-2 md:flex-row'>
                       <span className='text-white'>Quote: </span>
-                      <input type="text" value={quote} onChange={(e) => setQuote(e.target.value)} className='bg-white/10 backdrop-blur-lg text-white border-white border rounded-md text-base px-2 py-1' />
+                      <input 
+                        type="text" 
+                        value={quote} 
+                        onChange={(e) => setQuote(e.target.value)} 
+                        className='bg-white/10 backdrop-blur-lg text-white border-white border rounded-md text-base px-2 py-1' />
                     </div>
                     <div className='flex flex-col gap-2 md:flex-row'>
                       <span className='text-white'>Author: </span>
-                      <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} className='bg-white/10 backdrop-blur-lg border-white text-white border rounded-md text-base px-2 py-1' />
+                      <input 
+                        type="text" 
+                        value={author} 
+                        onChange={(e) => setAuthor(e.target.value)} 
+                        className='bg-white/10 backdrop-blur-lg border-white text-white border rounded-md text-base px-2 py-1' />
                     </div>
+                    <button
+                      onClick={() => setIsOpened(true)}
+                      className='flex items-center justify-center text-center text-white bg-teal-500 hover:bg-teal-400 px-6 gap-4'
+                      style={{
+                        marginTop: '10px',
+                        padding: '10px 20px',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Import from Favourites
+                    </button>
                   </div>
                 </>
               )
