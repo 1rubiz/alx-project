@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { FaHeart, FaHeartCrack, FaCircleStop, FaTrash } from 'react-icons/fa6'
+import { FaHeart, FaHeartCrack, FaCircleStop, FaTrash, FaDownload, FaPencil } from 'react-icons/fa6'
 import { IoClose } from 'react-icons/io5'
 import useQuotesStore from '../stores/quoteStore';
 import quotes from '../lib/quotes';
 import { motion, AnimatePresence } from "framer-motion";
 import CustomQuote from './customQuote';
 import ImageUpload from './drag&drop';
+import ColorSelector from './colorSelector'
 
 const Quotes = () => {
   const [inspiration, setInspiration] = useState(quotes[0]);
@@ -15,11 +16,16 @@ const Quotes = () => {
   const [showFirst, setShowFirst] = useState(true);
   const [custom, setCustom] = useState(false)
   const [image, setImage] = useState(null);
+  const [selectedColor, setSelectedColor] = useState('#FF6B6B'); 
   const componentRef = useRef(null);
 
   const toggleComponents = () => {
     setShowFirst(!showFirst);
   };
+
+  const clearImage = () => {
+    setImage(null)
+  }
 
   const slideVariants = {
     enterFromLeft: {
@@ -42,6 +48,15 @@ const Quotes = () => {
       x: "100%",
       opacity: 0,
     },
+  };
+
+  // Helper function to determine if color is light (copy this to parent component)
+  const isLightColor = (hexColor) => {
+    const r = parseInt(hexColor.slice(1, 3), 16);
+    const g = parseInt(hexColor.slice(3, 5), 16);
+    const b = parseInt(hexColor.slice(5, 7), 16);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.5;
   };
 
   useEffect(() => {
@@ -67,12 +82,16 @@ const Quotes = () => {
 
   return (
     <div className="relative w-screen h-screen bg-transparent flex flex-col items-center justify-center p-4">
-      <button
-        onClick={toggleComponents}
-        className="absolute top-5 right-5 px-4 py-2 bg-blue-500 text-white rounded-md shadow-md"
-      >
-        Toggle
-      </button>
+      {
+        !showFirst && (
+          <button
+            onClick={toggleComponents}
+            className="absolute top-5 right-5 px-4 py-2 bg-blue-500 text-white rounded-md shadow-md"
+          >
+            Back
+          </button>
+        )
+      }
       <AnimatePresence mode="wait">
         {showFirst ? (
           <motion.div
@@ -120,7 +139,7 @@ const Quotes = () => {
                 <button
                   className="bg-green-600 hover:bg-green-300 col-span-5 text-xs md:text-base text-white px-4 py-2 rounded-md shadow-md focus:outline-none transition duration-300 flex items-center justify-center gap-2"
                 >
-                  Download
+                  Download<FaDownload />
                 </button>
                 {/*<button
                   onClick={clearAll}
@@ -134,7 +153,7 @@ const Quotes = () => {
                   onClick={() => setShowFirst(false)}
                   className="bg-white w-full col-span-1 hover:bg-gray-300 text-xs md:text-base px-4 py-2 rounded-md shadow-md focus:outline-none transition duration-300 flex items-center justify-center gap-2"
                 >
-                  Custom Quote
+                  Custom Quote <FaPencil />
                 </button>
               </div>
             </div>
@@ -176,11 +195,22 @@ const Quotes = () => {
             variants={slideVariants}
             transition={{ duration: 0.5 }}
           >
-            <div ref={componentRef} className={`w-full bg-white h-64 relative flex items-center justify-center rounded-md ${image ? 'bg-cover bg-center bg-no-repeat' : 'bg-gray-50'}`}
-              style={image ? { backgroundImage: `url(${image})` } : {}}
+            {
+              image ? (
+                <button onClick={clearImage}>Clear Selected Image</button>
+              ) : (
+                <ColorSelector 
+                  selectedColor={selectedColor}
+                  setSelectedColor={setSelectedColor}
+                  isLightColor={isLightColor}
+                />
+              )
+            }
+            <div ref={componentRef} className={`w-full bg-white ${isLightColor(selectedColor) ? 'text-black' : 'text-white'} h-64 relative flex items-center justify-center rounded-md ${image ? 'bg-cover bg-center bg-no-repeat' : 'bg-gray-50'}`}
+              style={image ? { backgroundImage: `url(${image})` } : { backgroundColor: selectedColor }}
             >
               <img src="/quotation-mark.png" className='w-8 h-8 absolute top-4 left-4' alt="" />
-              <p className={`max-w-md px-4 ${image && 'bg-white/10 backdrop-blur-lg text-white py-8 rounded-md'}`}>{inspiration.split('–')[0]}</p>
+              <p className={`max-w-md px-4 ${image && 'bg-white/10 backdrop-blur-lg py-8 rounded-md'}`}>{inspiration.split('–')[0]}</p>
               <p className='absolute bottom-4 left-4'><span className='font-bold'>Author</span> - {inspiration.split('–')[1] ? inspiration.split('–')[1] : 'Anonymous'}</p>
               <img src="/quote.png" alt="" className='w-8 h-8 absolute bottom-4 right-4' />
             </div>

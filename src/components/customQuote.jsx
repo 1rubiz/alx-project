@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { toPng } from 'html-to-image';
 import { FaDownload } from 'react-icons/fa'
+import toast from 'react-hot-toast';
 
 const CustomQuote = ({ componentRef }) => {
   
@@ -11,10 +12,12 @@ const CustomQuote = ({ componentRef }) => {
         const dataUrl = await toPng(componentRef.current);
         const link = document.createElement('a');
         link.href = dataUrl;
-        link.download = 'component-image.png';
+        link.download = 'quote.png';
         link.click();
+        toast.success('Download successful')
       } catch (error) {
         console.error('Failed to generate image:', error);
+        toast.error('Download Failed')
       }
     } else {
       console.log('no image ref')
@@ -23,12 +26,6 @@ const CustomQuote = ({ componentRef }) => {
 
   return (
     <div>
-      {/* Component to be converted */}
-      {/* <div ref={componentRef} style={{ padding: '20px', backgroundColor: '#f0f0f0' }}>
-        <h1>Hello, World!</h1>
-        <p>This component will be converted to an image.</p>
-      </div>*/}
-
       {/* Button to trigger download */}
       <button
         onClick={handleDownload}
