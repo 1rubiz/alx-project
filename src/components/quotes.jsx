@@ -1,15 +1,16 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { FaHeart, FaHeartCrack, FaCircleStop, FaTrash, FaDownload, FaPencil } from 'react-icons/fa6'
+import { useEffect, useState, useRef } from 'react';
+import { FaHeart, FaHeartCrack, FaTrash, FaDownload, FaPencil } from 'react-icons/fa6'
 import { IoClose } from 'react-icons/io5'
 import useQuotesStore from '../stores/quoteStore';
-import quotes from '../lib/quotes';
 import { motion, AnimatePresence } from "framer-motion";
 import CustomQuote from './customQuote';
 import ImageUpload from './drag&drop';
 import ColorSelector from './colorSelector'
+import axios from 'axios'
+import toast from 'react-hot-toast';
 
 const Quotes = () => {
-  const [inspiration, setInspiration] = useState(quotes[0]);
+  const [inspiration, setInspiration] = useState('Loading ....');
   const [isOpened, setIsOpened] = useState(false);
   const [liked, setLiked] = useState(false)
   const { items, toggleItem, exists, removeItem, clearAll } = useQuotesStore();
@@ -20,6 +21,24 @@ const Quotes = () => {
   const [quote, setQuote] = useState('')
   const [author, setAuthor] = useState('')
   const componentRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const api = import.meta.env.VITE_API
+
+  const fetchQuote = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${api}/api/generate`);
+      setInspiration(response.data.data)
+      setLoading(false)
+    } catch (error) {
+      toast.error('Error fetching data!')
+      console.error('Error fetching quote:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuote();
+  }, []);
 
   const toggleComponents = () => {
     setShowFirst(!showFirst);
@@ -39,6 +58,7 @@ const Quotes = () => {
     setShowFirst(false)
   }
 
+  // variable holding framer-motion values
   const slideVariants = {
     enterFromLeft: {
       x: "-100%",
@@ -77,16 +97,6 @@ const Quotes = () => {
     }
   }, [inspiration, items])
 
-
-  const handleClick = () => {
-    setIsOpened(!isOpened);
-  };
-
-  const getRandomInspiration = () => {
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    setInspiration(quotes[randomIndex]);
-  };
-
   const selectQuote = (item) => {
     if (custom) {
       setQuote(item.split('–')[0])
@@ -98,7 +108,7 @@ const Quotes = () => {
   }
 
   return (
-    <div className="relative w-screen h-screen pt-16 md:pt-0 overflow-y-scroll bg-transparent md:flex flex-col items-center justify-center p-4">
+    <div className="relative w-screen h-screen pt-16 md:pt-0 overflow-y-scroll md:overflow-y-hidden  bg-transparent md:flex flex-col items-center justify-center p-4">
       {
         !showFirst && (
           <button
@@ -116,7 +126,7 @@ const Quotes = () => {
               }`}
           >
             <IoClose className="absolute top-4 right-4 text-white z-50 font-bold text-3xl cursor-pointer" onClick={() => setIsOpened(false)} />
-            <div className='w-full h-[60%] overflow-y-scroll no-scrollbar px-2 flex flex-col gap-4'>
+            <div className='w-full h-[60%] overflow-y-scroll no-scrollbar px-2 flex flex-col gap-2'>
               {
                 items.length !== 0 && (
                   <div>
@@ -132,7 +142,7 @@ const Quotes = () => {
               {
                 items ? (
                   items.map((item) =>
-                    <div key={item} className='grid grid-cols-6 p-2 shadow-lg my-2 hover:bg-white bg-gray-300 rounded-md'>
+                    <div key={item} className='grid grid-cols-6 p-2 shadow-lg my-1 hover:bg-white bg-gray-300 rounded-md'>
                       <div onClick={() => selectQuote(item)} className='col-span-5 text-nowrap max-w-full overflow-x-clip cursor-pointer'>
                         {item}
                       </div>
@@ -161,7 +171,16 @@ const Quotes = () => {
             <div className="max-w-md w-full bg-white/10 backdrop-blur-lg border-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
               <div className='flex flex-wrap'>
                 <img src="/quotation-mark.png" className='w-8 h-8' alt="" />
-                <p className="text-lg mt-4 min-w-full text-white dark:text-gray-300 mb-6">{inspiration}</p>
+                {
+                  loading ? (
+                    <div className="flex bg-transparent items-center justify-center min-h-20 w-full bg-gray-100">
+                      {/*<!-- Spinning Div -->*/}
+                      <div className="w-8 h-8 border-4 border-dashed border-white rounded-full animate-spin"></div>
+                    </div>
+                  ) : (
+                    <p className="text-lg mt-4 min-w-full text-white dark:text-gray-300 mb-6">{inspiration}</p>
+                  )
+                }
                 <div className='w-full flex justify-end'>
                   <img src="/quote.png" alt="" className='w-8 h-8 place-self-start' />
                 </div>
@@ -169,7 +188,7 @@ const Quotes = () => {
 
               {/* Buttons */}
               <button
-                onClick={getRandomInspiration}
+                onClick={fetchQuote}
                 className="bg-blue-500 my-4 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow-md focus:outline-none transition duration-300"
               >
                 New Inspiration ✨

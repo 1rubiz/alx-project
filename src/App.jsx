@@ -1,18 +1,25 @@
-import './App.css'
 import Quotes from './components/quotes'
 import { Link, Route, BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom'
 import Landing from './pages/landing';
 import ParticlesBackground from './components/particles';
 import { Toaster } from "@/components/ui/toaster"
-import { FaPowerOff } from 'react-icons/fa'
+import { FaPowerOff, FaCaretRight } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false)
   const email = sessionStorage.getItem('email')
-
+  const username = sessionStorage.getItem('username')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  useEffect(()=>{
+    if(email){
+      setIsLoggedIn(true)
+    }else{
+      setIsLoggedIn(false)
+    }
+  }, [email])
   return (
     <>      
       <div className="absolute w-full h-screen top-0 left-0 -z-0">
@@ -20,8 +27,9 @@ function App() {
       </div>
       <div className='z-50 absolute w-full'>
         <Router>
-          <div className='text-3xl fixed z-[70] font-bold text-white top-4 left-4'>
-            <Link to="/">   Dot Quotes</Link>
+          <div className='text-3xl fixed z-[70] font-bold text-white top-4 left-4 flex items-center'>
+            <Link to="/">   Dot Quotes </Link>
+            {username && <span className='flex items-center gap-2'><FaCaretRight /> {username}</span>}
           </div>
           <Routes>
             <Route path='/' element={<Landing />} />
@@ -34,7 +42,7 @@ function App() {
         <div className=''>Built by Ruby Izekor <a href="#" className='underline md:px-4'>https://www.github.com/1rubiz</a>
         </div>
         {
-          email && (
+          isLoggedIn && (
             <span onClick={() => setIsOpen(true)} className='p-2 rounded-md flex items-center justify-center bg-white text-red-400'>
               <FaPowerOff />
             </span>
@@ -56,6 +64,7 @@ const Logout = ({ isOpen, setIsOpen }) => {
   const logout = () => {
     sessionStorage.clear()
     toast.success('Log out successfull!')
+    setIsOpen(false)
     navigate('/')
   }
 
