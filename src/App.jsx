@@ -1,25 +1,20 @@
+/* eslint-disable react/prop-types */
 import Quotes from './components/quotes'
 import { Link, Route, BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom'
 import Landing from './pages/landing';
 import ParticlesBackground from './components/particles';
 import { Toaster } from "@/components/ui/toaster"
-import { FaPowerOff, FaCaretRight } from 'react-icons/fa'
+import { FaCaretRight } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+import LogoutButton from './components/logout';
+import useUserStore from './stores/userStore';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false)
-  const email = sessionStorage.getItem('email')
-  const username = sessionStorage.getItem('username')
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  useEffect(()=>{
-    if(email){
-      setIsLoggedIn(true)
-    }else{
-      setIsLoggedIn(false)
-    }
-  }, [email])
+  const { user } = useUserStore()
+
   return (
     <>      
       <div className="absolute w-full h-screen top-0 left-0 -z-0">
@@ -29,25 +24,15 @@ function App() {
         <Router>
           <div className='text-3xl fixed z-[70] font-bold text-white top-4 left-4 flex items-center'>
             <Link to="/">   Dot Quotes </Link>
-            {username && <span className='flex items-center gap-2'><FaCaretRight /> {username}</span>}
+            {user && <span className='flex items-center gap-2'><FaCaretRight /> {user}</span>}
           </div>
           <Routes>
             <Route path='/' element={<Landing />} />
             <Route path='/quotes' element={<Quotes />} />
           </Routes>
           <Logout isOpen={isOpen} setIsOpen={setIsOpen} />
+          <LogoutButton setIsOpen={setIsOpen}/>
         </Router>
-      </div>
-      <div className='text-xs text-white z-50 fixed bottom-4 right-4 flex items-center justify-between md:just gap-8'>
-        <div className=''>Built by Ruby Izekor <a href="#" className='underline md:px-4'>https://www.github.com/1rubiz</a>
-        </div>
-        {
-          isLoggedIn && (
-            <span onClick={() => setIsOpen(true)} className='p-2 rounded-md flex items-center justify-center bg-white text-red-400'>
-              <FaPowerOff />
-            </span>
-          )
-        }
       </div>
       <Toaster />
     </>
@@ -58,13 +43,12 @@ export default App
 
 const Logout = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate()
-  const toggleSheet = () => {
-    setIsOpen(!isOpen);
-  };
+  const { setUser } = useUserStore()
   const logout = () => {
     sessionStorage.clear()
     toast.success('Log out successfull!')
     setIsOpen(false)
+    setUser('')
     navigate('/')
   }
 

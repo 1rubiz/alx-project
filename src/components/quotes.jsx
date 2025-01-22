@@ -231,17 +231,17 @@ const Quotes = () => {
         ) : (
           <motion.div
             key="second"
-            className="max-w-md lg:max-w-full w-full flex flex-col lg:flex-row items-center justify-center"
+            className="max-w-md lg:max-w-full w-full flex flex-col items-center justify-center"
             initial="enterFromLeft"
             animate="center"
             exit="exitToRight"
             variants={slideVariants}
             transition={{ duration: 0.5 }}
           >
-            <section className='w-full flex flex-col p-4'>
+            <section className='w-full flex flex-col p-4 items-center justify-center'>
               {
                 image ? (
-                  <div className='w-full my-2'>
+                  <div className='w-full max-w-md my-2'>
                     <button
                       className='flex items-center bg-red-400 px-6 gap-4'
                       style={{
@@ -262,7 +262,7 @@ const Quotes = () => {
                   />
                 )
               }
-              <div ref={componentRef} className={`w-full bg-white ${isLightColor(selectedColor) ? 'text-black' : 'text-white'} h-64 relative flex items-center justify-center rounded-md ${image ? 'bg-cover bg-center bg-no-repeat' : 'bg-gray-50'}`}
+              <div ref={componentRef} className={`w-full max-w-md bg-white ${isLightColor(selectedColor) ? 'text-black' : 'text-white'} h-64 relative flex items-center justify-center rounded-md ${image ? 'bg-cover bg-center bg-no-repeat' : 'bg-gray-50'}`}
                 style={image ? { backgroundImage: `url(${image})` } : { backgroundColor: selectedColor }}
               >
                 {
@@ -294,7 +294,7 @@ const Quotes = () => {
               {
                 custom && (
                   <>
-                    <div className='w-full flex flex-col my-4 gap-4 bg-white/10 backdrop-blur-lg border-white p-4 rounded-md'>
+                    <div className='w-full max-w-md flex flex-col my-4 gap-4 bg-white/10 backdrop-blur-lg border-white p-4 rounded-md'>
                       <div className='flex flex-col items-center gap-2 md:flex-row'>
                         <span className='text-white'>Quote: </span>
                         <input 

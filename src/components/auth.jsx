@@ -2,13 +2,9 @@ import { useState } from "react";
 import { IoClose } from 'react-icons/io5'
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import useUserStore from "../stores/userStore";
 
 const Auth = ({ isOpen, setIsOpen }) => {
-
-  const toggleSheet = () => {
-    setIsOpen(!isOpen);
-  };
-
   return (
     <div
       className={`absolute z-50 top-0 left-0 w-full bg-white shadow-lg transition-transform duration-500 ease-in-out ${isOpen ? 'translate-y-0' : '-translate-y-full'
@@ -24,6 +20,7 @@ const Auth = ({ isOpen, setIsOpen }) => {
 export default Auth;
 
 const AuthForm = () => {
+  const { setUser } = useUserStore()
   const navigate = useNavigate()
   const [isLogin, setIsLogin] = useState(true); // Toggle between Login and Signup
   const [formData, setFormData] = useState({
@@ -53,6 +50,7 @@ const AuthForm = () => {
             sessionStorage.setItem('password', formData.password);
             sessionStorage.setItem('username', username)
             toast.success('Success')
+            setUser(username)
             navigate('/quotes')
           }
         } else {
@@ -70,6 +68,7 @@ const AuthForm = () => {
         sessionStorage.setItem('password', formData.password);
         sessionStorage.setItem('username', formData.username)
         toast.success('Success: Account created')
+        setUser(formData.username)
         navigate('/quotes')
       } else {
         toast.error('All inputs are required!!')
