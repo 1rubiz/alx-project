@@ -28,7 +28,7 @@ const Quotes = () => {
     try {
       setLoading(true);
       const response = await axios.get(`${api}/api/generate`);
-      setInspiration(response.data.data)
+      setInspiration(response.data)
       setLoading(false)
     } catch (error) {
       setInspiration("API error!, contact admin - ADMIN")
