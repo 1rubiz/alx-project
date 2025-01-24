@@ -1,6 +1,5 @@
 # Dot Quotes
-
-Your random Quotes Generator, with quite card download option.
+Your random Quotes Generator, with quote card download option.
 
 ## Table of Contents
 
@@ -9,10 +8,12 @@ Your random Quotes Generator, with quite card download option.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+- Screenshots
 
 ## Introduction
+
+
+The Random Quote Generator is a web app built with React and Vite that fetches and displays random quotes from an external API. It offers a sleek, responsive interface, allowing users to generate quotes with a single click. The app aims to provide users with quick bursts of motivation or entertainment through dynamic, API-powered content
 
 
 ## Features
@@ -35,11 +36,11 @@ Clone the repo
 using any code editor of your choice, run the followng command in your desired directory.
 
 
-    git clone https://github.com/1rubiz/ProjectFX.git
+    git clone https://github.com/1rubiz/alx-project.git
 
 
 #### Navigate to the project directory
-    cd ProjectFX
+    cd alx-project
 
 #### Install project dependencies needed to run the app with npm
 
