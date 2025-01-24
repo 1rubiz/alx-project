@@ -31,6 +31,7 @@ const Quotes = () => {
       setInspiration(response.data.data)
       setLoading(false)
     } catch (error) {
+      setInspiration("API error!, contact admin - ADMIN")
       toast.error('Error fetching data!')
       console.error('Error fetching quote:', error);
     }
